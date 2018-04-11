@@ -1,0 +1,28 @@
+Technology in rugby: GPS systems continue to grow in importance
+LESS THAN 20 years into professionalism, rugby has become extremely open-minded to technology and sports science. Indeed, in many regards, it is leading the way.
+
+One example of that is the use of the GPS and heart rate monitoring systems provided by firms like STATSports, who are based in Dundalk. Formed in 2007 by Seán O’Connor and Alan Clarke, the company now provides its Viper system to the IRFU, Ulster Rugby and Connacht, as well as 15 of the 20 Premier League clubs in English soccer and the likes of Barcelona and Juventus.
+
+Other clients in rugby include the RFU, Super Rugby champions the Chiefs, Saracens, Leicester Tigers and Harlequins. STATSports analyst Richard Moffett joined TheScore.ie to explain the workings of the technology and what kind of data rugby clubs are focusing on.
+
+At the very heart of the system is the Viper Pod, the matchbox-sized capsule that you may have noticed on the upper back of many rugby players. The pod weighs about the same as two AA batteries, but manages to pack heaps of technology into its miniature frame. Teams can wear the pod in a tight vest or in the small pocket now built into many jersey designs.
+
+The second part of equipment the players wear is a thin hart-rate monitor that goes around the chest. Information collected by the two elements can be download by connection to a docking station, but can also be viewed live while a game or training session takes place.
+
+The live feeds can assist coaches with in-game decisions and substitutions, but when the data is downloaded post-match, more in-depth analysis can be done. So what exactly is the point of using the system? What does this technology tell coaches and players?
+
+When STATSports first launched in 2007 many clients simply wanted to know what distance their players were covering in games. ‘The higher, the better’ was the consensus but clubs gradually realised that how far a player runs isn’t as important as what he or she does in that distance. The focus shifted towards ‘high speed running’ measurements, recording how many metres a player covers over a specific speed.
+
+Different players have different speeds to surpass in order to get into the high speed metres category, with a highly individualized approach to this aspect of the data. There are six different speed zones for every player, completely relative to his or her own max speed. That would mean, for example, that a winger’s ‘zone six’ speed measurement would be higher than a prop’s.
+
+So what about the players who don’t get to those high speed zones very often? A scrum-half is the perfect example, a player who accelerates and decelerates constantly as they move from ruck to ruck. Unlike a winger, they may not get a chance to stretch their legs in open field, but they’re still working hard. The GPS system can account for their hard work with the  HML (high metabolic load) distance measurement.
+
+The HML distance records the metres a player covers while accelerating and decelerating at high intensity. Moffett’s analogy is a car breaking and accelerating on poor roads and, despite never reaching high speeds, using lots of fuel. Another car could travel at 100 km/h for an extended time without using much fuel at all. The HML measurement gives credit to the first car, the guy who is working hard in tight areas.
+
+The heart rate monitor is a particular area of interest for many clubs, with a max heart rate established in fitness testing at the start of the season. That allows the analysts to record how much of a game or training session players spend in the ‘red zone’, above 85% of their max heart rate. Again, it’s a good indicator of effort.
+
+A built-in accelerometer allows coaches and players to see the intensity of contact they take and dish out in each game. Moffett explains that the biggest hits in rugby can register at above 30 Gs, but tempers that incredible figure by explaining that the human body is capable of withstanding that force for such a limited amount of time. Still, the impact accelerometer allows teams to be smarter in resting players due to the increased understanding of the sheer force their bodies have been through.
+
+STATSports have been helping clubs to keep an eye out for indicators of injury and illness too. The ‘dynamic stress load’ records a player’s impact with the ground through their feet and as the amount of contact time increases, the likelihood of fatigue becomes more obvious. A tired player is far more likely to pick up an injury, so the increased dynamic stress load is constantly monitored. Moffett does stress that STATSports cannot predict injuries, but there are indicators in the data.
+
+Heart rate is another of those, as it will usually rise as the body attempts to fight off illness. While a player may not even feel sick, his of her heart rate will be higher than normal in training or a game, signifying that he or she might need a rest period. Players will often attempt to return from injury early, but the GPS data gives coaches and physios more data to help understand if the player is ready.
