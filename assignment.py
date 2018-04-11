@@ -8,6 +8,10 @@ import numpy as np
 import urllib
 from bs4 import BeautifulSoup as bs
 import os
+import sklearn
+import pandas as pd
+import scipy as sci
+import re
 
 ###########################
 # Part 1: Data Collection #
@@ -51,12 +55,14 @@ def get_articles_list(baseurl):
 
 # get the category labels for each month, store in text file
 def get_category_labels(monthly_contents):
-    file = open("categories.txt", "w")
+    # create directory for saving articles
+    file = open("categories/categories.txt", "a")
     categories = ""
 
     # for the given monthly sub-page, put each article category into a file
     for category in monthly_contents.find_all('td', class_='category'):
-        categories += category.get_text() + '\n'
+        if "N/A" not in category.get_text():
+            categories += category.get_text() + '\n'
     file.write(categories)
     file.close()
 
@@ -73,26 +79,63 @@ def get_article_content(article):
     # get the content of each article, the text in each legitimate <h2> paragraph
     article_text = article_contents.find('h2').get_text()
     for paragraph in article_contents.find_all('p', class_=''):
-        article_text += (paragraph.get_text() + '\n')
+        article_text += (paragraph.get_text() + "\n")
     return article_text
 
 
 # save the contents of each article into a separate text file.
 def save_article_contents(articles):
 
-    # create directory for saving articles
-    dirname = "dat"
-    os.mkdir(dirname)
-
     # save the contents of each article into a seperate text file
     for i in range(len(articles)):
         article_text = get_article_content(articles[i])
-        path = "dat/" + str(i) + "_article.txt"
+        path = "data/" + "article_" + str(i) + ".txt"
         file = open(path, "w", encoding="utf-8")
         file.write(article_text)
         print('Saved article #' + str(i))
         file.close()
 
+# os.mkdir("data")
+# os.mkdir("categories")
+# articles_list = get_articles_list(baseurl)
+# save_article_contents(articles_list)
 
-articles_list = get_articles_list(baseurl)
-save_article_contents(articles_list)
+###############################
+# Part 2: Text Classification #
+###############################
+# 1. From the files created in Part 1, load the set of raw documents into your
+# notebook. Ensure that each document has a class label, based on the original
+# category label that you identified.
+
+directory_category = "categories/categories.txt"
+directory_articles = "data/"
+
+def load_categories(directory):
+    with open(directory) as f:
+        categories = f.readlines()
+    return categories
+
+
+def load_articles(directory):
+    articles = []
+    for file in os.listdir(directory):
+        articles.append(file)
+    return articles
+
+
+# natural sorting for each article file name, which is type string
+def natural_sorting(file):
+    return [int(c) if c.isdigit() else c for c in re.split('(\d+)', file)]
+
+
+
+categories = load_categories(directory_category)
+articles = load_articles(directory_articles)
+articles.sort(key=natural_sorting)
+print(categories)
+print(articles)
+print(len(categories))
+print(len(articles))
+df = pd.DataFrame({'CATEGORY': categories, 'ARTICLE': articles})
+print(df[0:100])
+print(df[-10:-1])
