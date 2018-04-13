@@ -1,5 +1,4 @@
 """"
-
 author: Sam Luby
 created: 10th april 2018
 """
@@ -10,8 +9,12 @@ from bs4 import BeautifulSoup as bs
 import os
 import sklearn
 import pandas as pd
-import scipy as sci
+import scipy
 import re
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
+import nltk
+
 
 ###########################
 # Part 1: Data Collection #
@@ -116,7 +119,7 @@ def load_categories(directory):
     return categories
 
 
-def load_articles(directory):
+def load_articles_filenames(directory):
     articles = []
     for file in os.listdir(directory):
         articles.append(file)
@@ -128,14 +131,44 @@ def natural_sorting(file):
     return [int(c) if c.isdigit() else c for c in re.split('(\d+)', file)]
 
 
-
 categories = load_categories(directory_category)
-articles = load_articles(directory_articles)
+articles = load_articles_filenames(directory_articles)
+number_of_articles = len(articles)
 articles.sort(key=natural_sorting)
-print(categories)
-print(articles)
-print(len(categories))
-print(len(articles))
 df = pd.DataFrame({'CATEGORY': categories, 'ARTICLE': articles})
-print(df[0:100])
-print(df[-10:-1])
+
+
+def load_all_articles_contentes():
+    articles = list()
+    for i in range(number_of_articles):
+        file = open("data\\article" + str(i) + ".txt", "r")
+        content = file.read()
+        articles.append(content)
+    return articles
+
+
+# 2. From the raw documents, create a document-term matrix, using appropriate
+# text pre-processing and term weighting steps.
+
+def tokenizer(text):
+    #tokenizer
+    tokenize = CountVectorizer().build_tokenizer()
+    tokens = tokenize(text)
+
+    #lemmatisation
+    lemmatizer = nltk.stem.WordNetLemmatizer()
+    tokens_lemmatized = []
+    for token in tokens:
+        tokens_lemmatized.append(lemmatizer.lemmatize(token))
+    return tokens_lemmatized
+
+
+def create_term_matrix(articles):
+    words = []
+    for i in articles:
+        lemma_tokens = tokenizer(i)
+        words.extend(lemma_tokens)
+
+    # create TF-IDF weighted document-term matrix
+    vectorizer = TfidfVectorizer(min_df = 5, stop_words='english', tokenizer=tokenizer, ngram_range=(1,3))
+    term_matrix = vectorizer.fit_transform(articles)
