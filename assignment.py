@@ -1,5 +1,6 @@
 """"
 author: Sam Luby
+data science in python assignment 2
 created: 10th april 2018
 """
 
@@ -7,7 +8,6 @@ import numpy as np
 import urllib
 from bs4 import BeautifulSoup as bs
 import os
-import sklearn
 import pandas as pd
 import scipy
 import re
@@ -18,10 +18,11 @@ import nltk
 from scipy.cluster.hierarchy import ward, dendrogram
 import matplotlib.pyplot as plt
 
-
-###########################
-# Part 1: Data Collection #
-###########################
+######################################################################################################
+                                ############################
+                                # Part 1:  Data Collection #
+                                ############################
+######################################################################################################
 baseurl = "http://mlg.ucd.ie/modules/COMP41680/archive/"
 
 
@@ -106,22 +107,25 @@ def save_article_contents(articles):
 # articles_list = get_articles_list(baseurl)
 # save_article_contents(articles_list)
 
-###############################
-# Part 2: Text Classification #
-###############################
-# 1. From the files created in Part 1, load the set of raw documents into your
-# notebook. Ensure that each document has a class label, based on the original
-# category label that you identified.
+
+######################################################################################################
+                                ###############################
+                                # Part 2: Text Classification #
+                                ###############################
+######################################################################################################
+# Part 2.1: Load documents
 
 directory_category = "categories/categories.txt"
 directory_articles = "data/"
 
+# load each category from file
 def load_categories(directory):
     with open(directory) as f:
         categories = f.readlines()
     return categories
 
 
+# load all filenames from subdirectory
 def load_articles_filenames(directory):
     articles = []
     for file in os.listdir(directory):
@@ -134,25 +138,34 @@ def natural_sorting(file):
     return [int(c) if c.isdigit() else c for c in re.split('(\d+)', file)]
 
 
-categories = load_categories(directory_category)
-articles = load_articles_filenames(directory_articles)
-number_of_articles = len(articles)
-articles.sort(key=natural_sorting)
-df = pd.DataFrame({'CATEGORY': categories, 'ARTICLE': articles})
+# create pandas dataframe from categories and article filenames
+def create_dataframe():
+    categories = load_categories(directory_category)
+    articles = load_articles_filenames(directory_articles)
+    articles.sort(key=natural_sorting)
+    df = pd.DataFrame({'CATEGORY': categories, 'ARTICLE': articles})
+    return df
 
 
-def load_all_articles_contentes():
+# load the contents (text) from each article
+def load_all_articles_contents(number_of_articles):
     articles = list()
+    articles_index = list()
     for i in range(number_of_articles):
-        file = open("data\\article" + str(i) + ".txt", "r")
+        file = open("data\\article_" + str(i) + ".txt", "r", encoding='utf-8')
         content = file.read()
         articles.append(content)
-    return articles
+        articles_index.append(int(i))
+    return articles, articles_index
 
 
-# 2. From the raw documents, create a document-term matrix, using appropriate
-# text pre-processing and term weighting steps.
+df = create_dataframe()
+number_of_articles = len(df)
 
+
+# Part2.2: Create a document-term matrix
+
+# tokenizer and lemmatizer
 def tokenizer(text):
     #tokenizer
     tokenize = CountVectorizer().build_tokenizer()
@@ -166,6 +179,7 @@ def tokenizer(text):
     return tokens_lemmatized
 
 
+# document term-matrix (frequency of terms)
 def create_term_matrix(articles):
     words = []
     for i in articles:
@@ -175,13 +189,28 @@ def create_term_matrix(articles):
     # create TF-IDF weighted document-term matrix
     vectorizer = TfidfVectorizer(min_df = 5, stop_words='english', tokenizer=tokenizer, ngram_range=(1,3))
     term_matrix = vectorizer.fit_transform(articles)
-    return term_matrix
+    return term_matrix, vectorizer, words
 
-articles = load_all_articles_contentes()
-term_matrix = create_term_matrix(articles)
-distance_matrix = 1 - cosine_similarity(term_matrix)
 
-linkage_matrix = ward(distance_matrix)
-plt.figure(figsize=(15, 250))
-# dendrogram(linkage_matrix, orientation="right",labels=art_index) #hierarchical clustering as a dendrogram.
+# print the list of the N most common words found in articles
+def get_N_most_common_words(N, vectorizer, words):
+    most_common = list()
+    index = np.argsort(vectorizer.idf_)[::-1]
+    for i in range(0,N):
+        most_common.append(words[index[i]])
+    print(most_common)
+
+
+articles, articles_index = load_all_articles_contents(number_of_articles)
+term_matrix, vectorizer, words = create_term_matrix(articles)
+
+get_N_most_common_words(10, vectorizer, words)
+
+
+# Part 2.3: Multi-Class Classification Models
+
+# distance_matrix = 1 - cosine_similarity(term_matrix)
+# linkage_matrix = ward(distance_matrix)
+# plt.figure(figsize=(15, 250))
+# dendrogram(linkage_matrix, orientation="right",labels=articles_index) #hierarchical clustering as a dendrogram.
 # plt.show()
