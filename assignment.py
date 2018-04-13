@@ -13,7 +13,10 @@ import scipy
 import re
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 import nltk
+from scipy.cluster.hierarchy import ward, dendrogram
+import matplotlib.pyplot as plt
 
 
 ###########################
@@ -172,3 +175,13 @@ def create_term_matrix(articles):
     # create TF-IDF weighted document-term matrix
     vectorizer = TfidfVectorizer(min_df = 5, stop_words='english', tokenizer=tokenizer, ngram_range=(1,3))
     term_matrix = vectorizer.fit_transform(articles)
+    return term_matrix
+
+articles = load_all_articles_contentes()
+term_matrix = create_term_matrix(articles)
+distance_matrix = 1 - cosine_similarity(term_matrix)
+
+linkage_matrix = ward(distance_matrix)
+plt.figure(figsize=(15, 250))
+# dendrogram(linkage_matrix, orientation="right",labels=art_index) #hierarchical clustering as a dendrogram.
+# plt.show()
