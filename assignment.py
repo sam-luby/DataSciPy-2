@@ -16,7 +16,11 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import nltk
 from scipy.cluster.hierarchy import ward, dendrogram
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.neighbors import KNeighborsClassifier
 import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import *
 
 ######################################################################################################
                                 ############################
@@ -121,7 +125,7 @@ directory_articles = "data/"
 # load each category from file
 def load_categories(directory):
     with open(directory) as f:
-        categories = f.readlines()
+        categories = [line.rstrip() for line in f]
     return categories
 
 
@@ -203,14 +207,36 @@ def get_N_most_common_words(N, vectorizer, words):
 
 articles, articles_index = load_all_articles_contents(number_of_articles)
 term_matrix, vectorizer, words = create_term_matrix(articles)
-
 get_N_most_common_words(10, vectorizer, words)
 
 
 # Part 2.3: Multi-Class Classification Models
 
+# Hierarchical Clustering
 # distance_matrix = 1 - cosine_similarity(term_matrix)
 # linkage_matrix = ward(distance_matrix)
 # plt.figure(figsize=(15, 250))
 # dendrogram(linkage_matrix, orientation="right",labels=articles_index) #hierarchical clustering as a dendrogram.
 # plt.show()
+
+
+# Naive Bayes
+# Uses Bayes' theorem with the "naive" assumption of independence between every pair of features.
+
+
+
+
+
+# kNN - Nearest Neighbour
+target = df['CATEGORY']
+data_train, data_test, target_train, target_test = train_test_split(term_matrix, target, test_size=0.4)
+
+model = KNeighborsClassifier(n_neighbors=3)
+model.fit(data_train, target_train)
+print(model)
+predicted = model.predict(data_test)
+print(predicted)
+acc = accuracy_score(target_test, predicted)
+print(acc)
+
+
