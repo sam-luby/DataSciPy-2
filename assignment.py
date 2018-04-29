@@ -18,7 +18,6 @@ import nltk
 from scipy.cluster.hierarchy import ward, dendrogram
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.neighbors import KNeighborsClassifier
-import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import *
 
@@ -170,7 +169,7 @@ number_of_articles = len(df)
 # Part2.2: Create a document-term matrix
 
 # tokenizer and lemmatizer
-def tokenizer(text):
+def lemma_tokenizer(text):
     #tokenizer
     tokenize = CountVectorizer().build_tokenizer()
     tokens = tokenize(text)
@@ -187,11 +186,11 @@ def tokenizer(text):
 def create_term_matrix(articles):
     words = []
     for i in articles:
-        lemma_tokens = tokenizer(i)
+        lemma_tokens = lemma_tokenizer(i)
         words.extend(lemma_tokens)
 
     # create TF-IDF weighted document-term matrix
-    vectorizer = TfidfVectorizer(min_df = 5, stop_words='english', tokenizer=tokenizer, ngram_range=(1,3))
+    vectorizer = TfidfVectorizer(min_df = 5, stop_words='english', tokenizer=lemma_tokenizer, ngram_range=(1,3))
     term_matrix = vectorizer.fit_transform(articles)
     return term_matrix, vectorizer, words
 
@@ -207,6 +206,9 @@ def get_N_most_common_words(N, vectorizer, words):
 
 articles, articles_index = load_all_articles_contents(number_of_articles)
 term_matrix, vectorizer, words = create_term_matrix(articles)
+print(term_matrix)
+# print(words)
+# print(vectorizer)
 get_N_most_common_words(10, vectorizer, words)
 
 
@@ -225,18 +227,16 @@ get_N_most_common_words(10, vectorizer, words)
 
 
 
-
-
-# kNN - Nearest Neighbour
-target = df['CATEGORY']
-data_train, data_test, target_train, target_test = train_test_split(term_matrix, target, test_size=0.4)
-
-model = KNeighborsClassifier(n_neighbors=3)
-model.fit(data_train, target_train)
-print(model)
-predicted = model.predict(data_test)
-print(predicted)
-acc = accuracy_score(target_test, predicted)
-print(acc)
+# # kNN - Nearest Neighbour
+# target = df['CATEGORY']
+# data_train, data_test, target_train, target_test = train_test_split(term_matrix, target, test_size=0.4)
+#
+# model = KNeighborsClassifier(n_neighbors=3)
+# model.fit(data_train, target_train)
+# print(model)
+# predicted = model.predict(data_test)
+# print(predicted)
+# acc = accuracy_score(target_test, predicted)
+# print(acc)
 
 
