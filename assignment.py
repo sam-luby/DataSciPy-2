@@ -216,6 +216,16 @@ term_matrix, vectorizer, words = create_term_matrix(articles)
 #       Classification Models      #
 ####################################
 target = df['CATEGORY']
+
+def get_categories(df):
+    categories = df[['CATEGORY']].drop_duplicates()['CATEGORY'].tolist()
+    for i in  range(len(categories)):
+        categories[i] = categories[i].replace(u'\xa0', '')
+    return categories
+
+categories = get_categories(df)
+print(categories)
+
 data_train, data_test, target_train, target_test = train_test_split(term_matrix, target, test_size=0.2)
 
 # kNN - Nearest Neighbour
@@ -251,29 +261,24 @@ print("Accuracy using SVM method: " + str(round(svc_acc*100, 2)) + "%")
 # Cross-Validation Evaluation
 scores = cross_val_score(model_kn, term_matrix, target, cv=5, scoring='accuracy')
 print("Evaluating kNN classifier with Cross-Validation yields avg score: " + str(round(scores.mean()*100, 2)))
-
 scores = cross_val_score(model_nb, term_matrix, target, cv=5, scoring='accuracy')
 print("Evaluating Naive Bayes classifier with Cross-Validation yields avg score: " + str(round(scores.mean()*100, 2)))
-
 scores = cross_val_score(model_svc, term_matrix, target, cv=5, scoring='accuracy')
 print("Evaluating SVC classifier with Cross-Validation yields avg score: " + str(round(scores.mean()*100, 2)))
 
 
 # Confusion Matrix Evaluation
 cm_knn = confusion_matrix(target_test, predicted_kn)
-print(cm_knn)
-
+print("kNN Confusion Matrix" + '\n' +  str(cm_knn))
 cm_nb = confusion_matrix(target_test, predicted_nb)
-print(cm_nb)
-
+print("Naive Bayes Confusion Matrix" + '\n' +  str(cm_nb))
 cm_svc = confusion_matrix(target_test, predicted_svc)
-print(cm_svc)
+print("SVM Confusion Matrix" + '\n' +  str(cm_svc))
 
 
 def plot_confusion_matrix(cm, classes,
                           title='Confusion matrix',
                           cmap=plt.cm.Blues):
-
 
     cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
     plt.imshow(cm, interpolation='nearest', cmap=cmap)
@@ -294,12 +299,11 @@ def plot_confusion_matrix(cm, classes,
     plt.ylabel('True category')
     plt.xlabel('Predicted category')
 
-classnames = ['sport', 'technology', 'business']
 
 plt.figure()
-plot_confusion_matrix(cm_knn, classnames,title='Confusion Matrix1')
+plot_confusion_matrix(cm_knn, categories, title='kNN Confusion Matrix')
 plt.figure()
-plot_confusion_matrix(cm_nb, classnames, title='Confusion Matrix2')
+plot_confusion_matrix(cm_nb, categories, title='Naive Bayes Confusion Matrix')
 plt.figure()
-plot_confusion_matrix(cm_svc, classnames, title='Confusion Matrix3')
+plot_confusion_matrix(cm_svc, categories, title='SVM Confusion Matrix')
 plt.show()
