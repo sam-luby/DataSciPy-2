@@ -18,7 +18,7 @@ import nltk
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.metrics import *
 
 ######################################################################################################
@@ -212,29 +212,30 @@ term_matrix, vectorizer, words = create_term_matrix(articles)
 # get_N_most_common_words(10, vectorizer, words)
 
 
-# Part 2.3: Multi-Class Classification Models
+####################################
+#       Classification Models      #
+####################################
 target = df['CATEGORY']
 data_train, data_test, target_train, target_test = train_test_split(term_matrix, target, test_size=0.2)
 
 # kNN - Nearest Neighbour
-model = KNeighborsClassifier(n_neighbors=3)
-model.fit(data_train, target_train)
-predicted = model.predict(data_test)
-knn_acc = accuracy_score(target_test, predicted)
+model_kn = KNeighborsClassifier(n_neighbors=3)
+model_kn.fit(data_train, target_train)
+predicted_kn = model_kn.predict(data_test)
+knn_acc = accuracy_score(target_test, predicted_kn)
 
 # Naive Bayes
-# Uses Bayes' theorem with the "naive" assumption of independence between every pair of features.
-model = MultinomialNB()
-model.fit(data_train, target_train)
-predicted = model.predict(data_test)
-nb_acc = accuracy_score(target_test, predicted)
+model_nb = MultinomialNB()
+model_nb.fit(data_train, target_train)
+predicted_nb = model_nb.predict(data_test)
+nb_acc = accuracy_score(target_test, predicted_nb)
 
 
 # Support Vector Machines
-model = SVC()
-model.fit(data_train, target_train)
-predicted = model.predict(data_test)
-svc_acc = accuracy_score(target_test, predicted)
+model_svc = SVC(kernel='linear')
+model_svc.fit(data_train, target_train)
+predicted_svc = model_svc.predict(data_test)
+svc_acc = accuracy_score(target_test, predicted_svc)
 
 
 ####################################
@@ -248,47 +249,28 @@ print("Accuracy using SVM method: " + str(round(svc_acc*100, 2)) + "%")
 
 
 # Cross-Validation Evaluation
-model = KNeighborsClassifier(n_neighbors=3)
-# test_scores = cross_val_score(model, term_matrix, target, cv=5, scoring='accuracy')
-# print("Evaluating kNN classifier with Cross-Validation yields avg score: " + str(round(test_scores.mean()*100, 2)))
+scores = cross_val_score(model_kn, term_matrix, target, cv=5, scoring='accuracy')
+print("Evaluating kNN classifier with Cross-Validation yields avg score: " + str(round(scores.mean()*100, 2)))
 
+scores = cross_val_score(model_nb, term_matrix, target, cv=5, scoring='accuracy')
+print("Evaluating Naive Bayes classifier with Cross-Validation yields avg score: " + str(round(scores.mean()*100, 2)))
 
-
-# model = KNeighborsClassifier(n_neighbors=3)
-# scores = cross_val_score(model, data_train, target_train, cv=5, scoring ='accuracy')
-# print("Evaluating kNN classifier with Cross-Validation yields avg score: " + str(round(scores.mean()*100, 2)))
-#
-# model = MultinomialNB()
-# scores = cross_val_score(model, data_train, target_train, cv=5, scoring="accuracy")
-# print("Evaluating Naive Bayes classifier with Cross-Validation yields avg score: " + str(round(scores.mean()*100, 2)))
-#
-# model = SVC()
-# scores = cross_val_score(model, data_train, target_train, cv=5, scoring="accuracy")
-# print("Evaluating SVC classifier with Cross-Validation yields avg score: " + str(round(scores.mean()*100, 2)))
+scores = cross_val_score(model_svc, term_matrix, target, cv=5, scoring='accuracy')
+print("Evaluating SVC classifier with Cross-Validation yields avg score: " + str(round(scores.mean()*100, 2)))
 
 
 # Confusion Matrix Evaluation
-model = KNeighborsClassifier(n_neighbors=3)
-model.fit(data_train, target_train)
-predicted = model.predict(data_test)
-cm_knn = confusion_matrix(target_test, predicted)
+cm_knn = confusion_matrix(target_test, predicted_kn)
 print(cm_knn)
 
-model = MultinomialNB()
-model.fit(data_train, target_train)
-predicted = model.predict(data_test)
-cm_nb = confusion_matrix(target_test, predicted)
+cm_nb = confusion_matrix(target_test, predicted_nb)
 print(cm_nb)
 
-model = SVC()
-model.fit(data_train, target_train)
-predicted = model.predict(data_test)
-cm_svc = confusion_matrix(target_test, predicted)
+cm_svc = confusion_matrix(target_test, predicted_svc)
 print(cm_svc)
 
 
 def plot_confusion_matrix(cm, classes,
-                          normalize=False,
                           title='Confusion matrix',
                           cmap=plt.cm.Blues):
 
@@ -310,14 +292,14 @@ def plot_confusion_matrix(cm, classes,
 
     plt.tight_layout()
     plt.ylabel('True category')
-    plt.xlabel('Predicted predicted category')
+    plt.xlabel('Predicted category')
 
 classnames = ['sport', 'technology', 'business']
 
 plt.figure()
-plot_confusion_matrix(cm_knn, classnames, normalize=True, title='Confusion Matrix1')
+plot_confusion_matrix(cm_knn, classnames,title='Confusion Matrix1')
 plt.figure()
-plot_confusion_matrix(cm_nb, classnames, normalize=True, title='Confusion Matrix2')
+plot_confusion_matrix(cm_nb, classnames, title='Confusion Matrix2')
 plt.figure()
-plot_confusion_matrix(cm_svc, classnames, normalize=True, title='Confusion Matrix3')
+plot_confusion_matrix(cm_svc, classnames, title='Confusion Matrix3')
 plt.show()
