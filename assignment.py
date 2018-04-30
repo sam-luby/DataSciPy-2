@@ -18,6 +18,8 @@ import nltk
 from scipy.cluster.hierarchy import ward, dendrogram
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import cross_val_score
+from sklearn.svm import SVC
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import *
 
@@ -190,7 +192,7 @@ def create_term_matrix(articles):
         words.extend(lemma_tokens)
 
     # create TF-IDF weighted document-term matrix
-    vectorizer = TfidfVectorizer(min_df = 5, stop_words='english', tokenizer=lemma_tokenizer, ngram_range=(1,3))
+    vectorizer = TfidfVectorizer(min_df=3, stop_words='english', tokenizer=lemma_tokenizer, ngram_range=(1, 3))
     term_matrix = vectorizer.fit_transform(articles)
     return term_matrix, vectorizer, words
 
@@ -199,44 +201,70 @@ def create_term_matrix(articles):
 def get_N_most_common_words(N, vectorizer, words):
     most_common = list()
     index = np.argsort(vectorizer.idf_)[::-1]
-    for i in range(0,N):
+    for i in range(0, N):
         most_common.append(words[index[i]])
     print(most_common)
 
 
 articles, articles_index = load_all_articles_contents(number_of_articles)
 term_matrix, vectorizer, words = create_term_matrix(articles)
-print(term_matrix)
+# print(term_matrix)
 # print(words)
 # print(vectorizer)
-get_N_most_common_words(10, vectorizer, words)
+# get_N_most_common_words(10, vectorizer, words)
 
 
 # Part 2.3: Multi-Class Classification Models
+target = df['CATEGORY']
+data_train, data_test, target_train, target_test = train_test_split(term_matrix, target, test_size=0.2)
 
-# Hierarchical Clustering
-# distance_matrix = 1 - cosine_similarity(term_matrix)
-# linkage_matrix = ward(distance_matrix)
-# plt.figure(figsize=(15, 250))
-# dendrogram(linkage_matrix, orientation="right",labels=articles_index) #hierarchical clustering as a dendrogram.
-# plt.show()
-
+# kNN - Nearest Neighbour
+model = KNeighborsClassifier(n_neighbors=3)
+model.fit(data_train, target_train)
+predicted = model.predict(data_test)
+knn_acc = accuracy_score(target_test, predicted)
 
 # Naive Bayes
 # Uses Bayes' theorem with the "naive" assumption of independence between every pair of features.
+model = MultinomialNB()
+model.fit(data_train, target_train)
+predicted = model.predict(data_test)
+nb_acc = accuracy_score(target_test, predicted)
 
 
+# Support Vector Machines
+model = SVC()
+model.fit(data_train, target_train)
+predicted = model.predict(data_test)
+svc_acc = accuracy_score(target_test, predicted)
 
-# # kNN - Nearest Neighbour
-# target = df['CATEGORY']
-# data_train, data_test, target_train, target_test = train_test_split(term_matrix, target, test_size=0.4)
-#
-# model = KNeighborsClassifier(n_neighbors=3)
-# model.fit(data_train, target_train)
-# print(model)
-# predicted = model.predict(data_test)
-# print(predicted)
-# acc = accuracy_score(target_test, predicted)
-# print(acc)
+####################################
+# Evaluating Classification Models #
+####################################
+
+# Accuracy
+print("Accuracy using kNN method: " + str(round(knn_acc*100, 2)) + "%")
+print("Accuracy using Naive Bayes method: " + str(round(nb_acc*100, 2)) + "%")
+print("Accuracy using SVM method: " + str(round(svc_acc*100, 2)) + "%")
 
 
+# Cross-Validation Evaluation
+model = KNeighborsClassifier(n_neighbors=3)
+scores = cross_val_score(model, data_train, target_train, cv=5, scoring ='accuracy')
+print("Evaluating kNN classifier with Cross-Validation yields avg score: " + str(scores.mean()))
+
+model = MultinomialNB()
+scores = cross_val_score(model, data_train, target_train, cv=5, scoring="accuracy")
+print("Evaluating Naive Bayes classifier with Cross-Validation yields avg score: " + str(scores.mean()))
+
+model = SVC()
+scores = cross_val_score(model, data_train, target_train, cv=5, scoring="accuracy")
+print("Evaluating SVC classifier with Cross-Validation yields avg score: " + str(scores.mean()))
+
+
+# Confusion Matrix Evaluation
+model = KNeighborsClassifier(n_neighbors=3)
+model.fit(data_train, target_train)
+predicted = model.predict(data_test)
+cm = confusion_matrix(target_test, predicted)
+print(cm)
