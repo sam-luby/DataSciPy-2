@@ -102,13 +102,29 @@ def save_article_contents(articles):
         path = "data/" + "article_" + str(i) + ".txt"
         file = open(path, "w", encoding="utf-8")
         file.write(article_text)
-        print('Saved article #' + str(i))
+        if i % 10 == 0:
+            print('Saved article #' + str(i))
         file.close()
 
-# os.mkdir("data")
-# os.mkdir("categories")
-# articles_list = get_articles_list(baseurl)
-# save_article_contents(articles_list)
+
+# only download  files if necessary
+def download_files(baseurl):
+    data_path = "data"
+    categories_path = "categories"
+
+    # check if directory exists, if not then download everything
+    if not os.path.isdir(data_path):
+        print("Files not present, downloading")
+        os.mkdir(data_path)
+        os.mkdir(categories_path)
+        articles_list = get_articles_list(baseurl)
+        save_article_contents(articles_list)
+    else:
+        print("Files already present.")
+
+
+
+download_files(baseurl) # main function for data scraping
 
 
 ######################################################################################################
@@ -154,6 +170,8 @@ def create_dataframe():
 def load_all_articles_contents(number_of_articles):
     articles = list()
     articles_index = list()
+
+    # for each article, append the contents and index to seperate lists
     for i in range(number_of_articles):
         file = open("data\\article_" + str(i) + ".txt", "r", encoding='utf-8')
         content = file.read()
@@ -215,8 +233,8 @@ term_matrix, vectorizer, words = create_term_matrix(articles)
 ####################################
 #       Classification Models      #
 ####################################
-target = df['CATEGORY']
 
+# gets the article categories (no duplicates)
 def get_categories(df):
     categories = df[['CATEGORY']].drop_duplicates()['CATEGORY'].tolist()
     for i in  range(len(categories)):
@@ -226,6 +244,8 @@ def get_categories(df):
 categories = get_categories(df)
 print(categories)
 
+# isolate category column from dataframe
+target = df['CATEGORY']
 data_train, data_test, target_train, target_test = train_test_split(term_matrix, target, test_size=0.2)
 
 # kNN - Nearest Neighbour
@@ -260,11 +280,11 @@ print("Accuracy using SVM method: " + str(round(svc_acc*100, 2)) + "%")
 
 # Cross-Validation Evaluation
 scores = cross_val_score(model_kn, term_matrix, target, cv=5, scoring='accuracy')
-print("Evaluating kNN classifier with Cross-Validation yields avg score: " + str(round(scores.mean()*100, 2)))
+print("Evaluating kNN classifier with Cross-Validation yields avg score: " + str(round(scores.mean()*100, 2)) + "%")
 scores = cross_val_score(model_nb, term_matrix, target, cv=5, scoring='accuracy')
-print("Evaluating Naive Bayes classifier with Cross-Validation yields avg score: " + str(round(scores.mean()*100, 2)))
+print("Evaluating Naive Bayes classifier with Cross-Validation yields avg score: " + str(round(scores.mean()*100, 2)) + "%")
 scores = cross_val_score(model_svc, term_matrix, target, cv=5, scoring='accuracy')
-print("Evaluating SVC classifier with Cross-Validation yields avg score: " + str(round(scores.mean()*100, 2)))
+print("Evaluating SVC classifier with Cross-Validation yields avg score: " + str(round(scores.mean()*100, 2)) + "%")
 
 
 # Confusion Matrix Evaluation
@@ -276,6 +296,7 @@ cm_svc = confusion_matrix(target_test, predicted_svc)
 print("SVM Confusion Matrix" + '\n' +  str(cm_svc))
 
 
+# graph of confusion matrix
 def plot_confusion_matrix(cm, classes,
                           title='Confusion matrix',
                           cmap=plt.cm.Blues):
@@ -300,6 +321,8 @@ def plot_confusion_matrix(cm, classes,
     plt.xlabel('Predicted category')
 
 
+
+# plot individual confusion matrices
 plt.figure()
 plot_confusion_matrix(cm_knn, categories, title='kNN Confusion Matrix')
 plt.figure()
