@@ -23,6 +23,7 @@ The articles are loaded into a pandas dataframe and some text processing is perf
 -> finally a term frequency-inverse document frequency (TF-IDF) maxtris is created. this involves weighting terms based on their importance (ie 'as', 'of', 'the' etc are 'weighed-down')
 
 
+
 Three different classification models are used on the text:
 k-Nearest Neighbours Classifier, the Naive Bayes classifier and the Support Vector Machines model.
 
