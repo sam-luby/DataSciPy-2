@@ -13,9 +13,13 @@ The corpus (article text contents) for each article are saved in seperate text f
 The articles are loaded into a pandas dataframe and some text processing is performed:
 
 -> the text is lemmatized: words are grouped together in terms of their based form (eg walking/walked -> walk)
+
 -> the text is tokenized: the text is divided into a series of tokens.
+
 -> a document-term matrix is created using the above: this is the frequency of words after lemmatizing/tokenizing.
+
 -> the text is vetorized: exluding stop-words and removing very infrequency ( < 5 ) terms. 
+
 -> finally a term frequency-inverse document frequency (TF-IDF) maxtris is created. this involves weighting terms based on their importance (ie 'as', 'of', 'the' etc are 'weighed-down')
 
 
