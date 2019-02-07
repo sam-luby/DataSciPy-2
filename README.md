@@ -6,6 +6,7 @@ project structure:
 2. assignment2.py - The source code used to create the notebook.
 3. data - folder with all scraped web content
 
+
 The project was an introduction to web scraping, machine learning and text processing.
 
 
@@ -72,5 +73,7 @@ The final method of evaluation I used is a confusion or error matrix. This is a 
   
 The table shows the proportion of correct predictions.
 The above three plots show the performance of classifiers when evaluating using the confusion matrix. The values are normalised, reporting a ratiometric value of correct predictions to all predictions.  
+
+
 
 Click into the jupyter notebok (.ipynb file) for a more detailed step-by-step procedure.
