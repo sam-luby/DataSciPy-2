@@ -1,26 +1,46 @@
 # DataSciPy-2
 
-Data Science in Python assignment 2
+Data Science in Python - Assignment 2 (A+ grade achieved)
+project structure:
+1. assignment2.ipynb - The Jupyter notebook for nice step-by-step procedure including graphs and discussion of results.
+2. assignment2.py - The source code used to create the notebook.
+3. data - folder with all scraped web content
 
-Assignment involved web scraping, text processing, applying text classification models and evaluating their performance. 
-
-We were provided with a URL (now gone but all data is saved here) with 1408 various news articles.
-
-BeautifulSoup is used to parse the articles and filter dead/unwanted webpage links.
-The corpus (article text contents) for each article are saved in seperate text files, along with the category the article belongs to (tech, business or sport).
+The project was an introduction to web scraping, machine learning and text processing.
 
 
-The articles are loaded into a pandas dataframe and some text processing is performed:
+This assignment can be broken down into the following:
+i. Collecting and filtering a large accumulation of content from a given website (web scraping).
+ii. Text processing and text mining to create a document-term matrix - a weighted list of the base-form of terms that appear in the text.
+iii. Build 3 different text classification models: kNN, Naive Bayes & SVM. Apply them to the text data. 
+iv. Evaluate the performance of the text classification models based on different evaluation parameters. 
 
--> the text is lemmatized: words are grouped together in terms of their based form (eg walking/walked -> walk)
 
--> the text is tokenized: the text is divided into a series of tokens.
+## Procedure
 
--> a document-term matrix is created using the above: this is the frequency of words after lemmatizing/tokenizing.
+### Data Collection
+A link to a mock webpage was provided (it's gone now but the data is all saved in the /data/ folder).
+The webpage index contained links to "montly" subpages, where each monthly subpage it self had dozens of links to various articles. Each article was given a category label on the page - sport, business or technology. The process for collecting the data from each article was as follows:
+* Automatically navigate through the subpages of the index, filtering out dead links.
+* On each subpage, checking each link was a valid link with article contents.
+* Opening each article link and parsing the html with BeatifulSoup.
+* The title and text body of the article are copied by looking at the appropriate HTML tags ('h' for headings, 'p' for paragraphs').
+* The content for each article is downloaded and saved into seperate text files - 'article_0', 'article_1' etc. A running indicator shows the progress of the webscraping.
+* The category labels for each article are saved into a seperate text file.
 
--> the text is vetorized: exluding stop-words and removing very infrequency ( < 5 ) terms. 
+### Text Processing
+I build a pandas dataframe consisting of the list of categories and the list of filenames. 'Natural sorting' must be used for the filenames, as otherwise the files would be sorted incorrectly (would be sorted as article_0, article_1, article_10, article_100 etc). 
 
--> finally a term frequency-inverse document frequency (TF-IDF) maxtris is created. this involves weighting terms based on their importance (ie 'as', 'of', 'the' etc are 'weighed-down')
+A list of the contents of each article is also created. The contents of each is first 'tokenized', dividing the text into a series of tokens. The contents is also 'lemmatized', grouping together in terms of their based form (eg walking/walked -> walk).
+
+A document-term matrix is created using the TF-IDF vectorizer. The TF-IDF (term frequency-inverse document frequency) weights the words to reflect their importance, so words like 'as' 'of' and 'the' are weighed down in the document-term matrix. 
+
+### Machine Learning Classification Models
+I used 3 different machine learning classification algorithms for this project.
+* k Nearest Neighbours (kNN) examines 'k' nearest neighbours' labels and uses the majority vote to determine its own.
+* Naive Bayes (NB) is a linear classifier based on Baye's theorem, but which assumes independence between features.
+* Support Vector Machines (SVM) works by finding the hyperplane (simply, a line) that maximises the margin between two classes of data points in an N-dimensional space.
+
 
 
 
