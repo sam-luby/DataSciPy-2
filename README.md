@@ -10,10 +10,10 @@ The project was an introduction to web scraping, machine learning and text proce
 
 
 This assignment can be broken down into the following:
-i. Collecting and filtering a large accumulation of content from a given website (web scraping).
-ii. Text processing and text mining to create a document-term matrix - a weighted list of the base-form of terms that appear in the text.
-iii. Build 3 different text classification models: kNN, Naive Bayes & SVM. Apply them to the text data. 
-iv. Evaluate the performance of the text classification models based on different evaluation parameters. 
+1. Collecting and filtering a large accumulation of content from a given website (web scraping).
+2. Text processing and text mining to create a document-term matrix - a weighted list of the base-form of terms that appear    in the text.
+3. Build 3 different text classification models: kNN, Naive Bayes & SVM. Apply them to the text data. 
+4. Evaluate the performance of the text classification models based on different evaluation parameters. 
 
 
 ## Procedure
@@ -42,16 +42,35 @@ I used 3 different machine learning classification algorithms for this project.
 * Support Vector Machines (SVM) works by finding the hyperplane (simply, a line) that maximises the margin between two classes of data points in an N-dimensional space.
 
 
+The corpus and categories are then each split into two seperate sets - training sets and test sets (to train and then evaluate each model).
+* _data_train_ is the data to train the model.
+* _data_test is_ the data used for evaluation.
+* _target_train_ is the category labels to train the model.
+* _target_test_ is the category labels used for evaluation.
+
+The ratio of 1:4 was used to split the sets - i.e. 20% of the data was used to train the model to test the remaining 80%.
 
 
-Three different classification models are used on the text:
-k-Nearest Neighbours Classifier, the Naive Bayes classifier and the Support Vector Machines model.
+I then applied the sets to each of the three classification models: first training the model with _data_train_ and _data_test_. Then, predictions for the test data are made for each of the classification models, which will be used for evaluation purposes.
 
-The text corpus is split into training and test sets (training to train the model, test to evaluate the model).
-The same is done for the list of categories.
 
-The 3 text classification models are used and evaluated on their performance.
-Various performance characteristics are used to evaluate the models.
+### Evaluation of Classification Models
+Then the classification models are evaluated on their performance, based on various performance characteristics.
 
-Click into the jupyter notebok (.ipynb file) for the step-by-step procedure.
+#### Accuracy 
+The simplest characteristic. It is the fraction or percentage of correct predictions to total predictions made by the classifier.
 
+#### Cross-Validation Evaluation
+Cross-validation involves parititioning the original data into distinct subsamples or 'folds', where each fold contains the same proportion of the corpus. The experiment is repeated for all folds and the accuracy is an average of each run.
+
+I experimented on several fold values, where in theory the higher number of folds yields the most accurate evaluation (n-folds gives n-values which are averaged).
+
+#### Confusion Matrix Evaluation
+The final method of evaluation I used is a confusion or error matrix. This is a way of visualising the model performance with a table layout. I used pyplot to create a more aesthetic table. 
+
+<image> 
+  
+The table shows the proportion of correct predictions.
+The above three plots show the performance of classifiers when evaluating using the confusion matrix. The values are normalised, reporting a ratiometric value of correct predictions to all predictions.  
+
+Click into the jupyter notebok (.ipynb file) for a more detailed step-by-step procedure.
