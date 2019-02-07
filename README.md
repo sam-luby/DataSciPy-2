@@ -68,7 +68,7 @@ I experimented on several fold values, where in theory the higher number of fold
 #### Confusion Matrix Evaluation
 The final method of evaluation I used is a confusion or error matrix. This is a way of visualising the model performance with a table layout. I used pyplot to create a more aesthetic table. 
 
-<image> 
+![picture alt](conf_matrix.png)
   
 The table shows the proportion of correct predictions.
 The above three plots show the performance of classifiers when evaluating using the confusion matrix. The values are normalised, reporting a ratiometric value of correct predictions to all predictions.  
